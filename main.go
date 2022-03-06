@@ -22,13 +22,28 @@ func main() {
 
 	fileName := path.Base(url_link)
 
-	response, _ := http.Get(url_link)
-	defer response.Body.Close()
+	fmt.Println("Checking if the file" + fileName + " already exists...")
+	if _, err := os.Stat(fileName); os.IsNotExist(err) {
+		response, err := http.Get(url_link)
+		if err != nil {
+			panic(err)
+		}
+		defer response.Body.Close()
 
-	newFile, _ := os.Create(fileName)
-	defer newFile.Close()
+		newFile, err := os.Create(fileName)
+		if err != nil {
+			panic(err)
+		}
+		defer newFile.Close()
 
-	_, _ = io.Copy(newFile, response.Body)
+		_, err = io.Copy(newFile, response.Body)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(fileName + " saved!")
+	} else {
+		fmt.Println(fileName + " already exists!")
+	}
 
 	fmt.Println(Bold("Downloading html from " + url_link + " to " + fileName))
 }
