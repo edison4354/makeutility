@@ -40,9 +40,9 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println(fileName + " saved!")
+		fmt.Println(Green(fileName + " saved!"))
 	} else {
-		fmt.Println(fileName + " already exists!")
+		fmt.Println(Red(fileName + " already exists!"))
 	}
 
 	fmt.Println(Bold("Downloading html from " + url_link + " to " + fileName))
