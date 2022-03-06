@@ -2,18 +2,33 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"os"
+	"path"
 
 	. "github.com/logrusorgru/aurora"
 )
 
 func main() {
-	link := ""
+	url_link := ""
+
 	if len(os.Args) == 2 {
-		link = string(os.Args[1])
+		url_link = string(os.Args[1])
 	} else {
-		log.Fatal("\nError while running - Usage: go run main.go <link>\n Please make sure you entered the link correctly")
+		log.Fatal("\nError while running - Usage: go run main.go <link>\nPlease make sure you entered the link")
 	}
-	fmt.Println(Bold(link))
+
+	fileName := path.Base(url_link)
+
+	response, _ := http.Get(url_link)
+	defer response.Body.Close()
+
+	newFile, _ := os.Create(fileName)
+	defer newFile.Close()
+
+	_, _ = io.Copy(newFile, response.Body)
+
+	fmt.Println(Bold("Downloading html from " + url_link + " to " + fileName))
 }
